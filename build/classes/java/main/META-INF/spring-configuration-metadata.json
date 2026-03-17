@@ -1,0 +1,25 @@
+{
+  "groups": [
+    {
+      "name": "tourapi",
+      "type": "com.dangdangtrip.config.TourApiProperties",
+      "sourceType": "com.dangdangtrip.config.TourApiProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "tourapi.base-url",
+      "type": "java.lang.String",
+      "sourceType": "com.dangdangtrip.config.TourApiProperties"
+    },
+    {
+      "name": "tourapi.service-key",
+      "type": "java.lang.String",
+      "sourceType": "com.dangdangtrip.config.TourApiProperties"
+    }
+  ],
+  "hints": [],
+  "ignored": {
+    "properties": []
+  }
+}
