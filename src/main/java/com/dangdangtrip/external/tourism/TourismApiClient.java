@@ -84,6 +84,25 @@ public class TourismApiClient {
                         .queryParam("MobileOS", "ETC")
                         .queryParam("MobileApp", "dangdangtrip")
                         .queryParam("_type", "json")
+                        .queryParam("numOfRows", 100)
+                        .queryParam("pageNo", 1)
+                        .build())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<TourApiResponse<AreaCodeItem>>() {})
+                .block();
+    }
+
+    public TourApiResponse<AreaCodeItem> getSigungu(String areaCode) {
+        return tourApiWebClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/areaCode2")
+                        .queryParam("serviceKey", tourApiProperties.getServiceKey())
+                        .queryParam("MobileOS", "ETC")
+                        .queryParam("MobileApp", "dangdangtrip")
+                        .queryParam("_type", "json")
+                        .queryParam("areaCode", areaCode)
+                        .queryParam("numOfRows", 100)
+                        .queryParam("pageNo", 1)
                         .build())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<TourApiResponse<AreaCodeItem>>() {})
