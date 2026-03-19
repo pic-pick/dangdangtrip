@@ -17,11 +17,12 @@ public class TravelPlaceController {
     public TravelPlacePageResponse getPlaces(
             @RequestParam(required = false) Integer areaCode,
             @RequestParam(required = false) Integer sigunguCode,
+            @RequestParam(required = false) Integer contentTypeId,
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return travelPlaceService.getPlaces(areaCode, sigunguCode, keyword, page, size);
+        return travelPlaceService.getPlaces(areaCode, sigunguCode, contentTypeId, keyword, page, size);
     }
 
     @GetMapping("/{contentId}")

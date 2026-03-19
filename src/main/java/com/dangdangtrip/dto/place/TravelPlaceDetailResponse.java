@@ -24,4 +24,11 @@ public class TravelPlaceDetailResponse {
     private String useTime;
     private String petInfo;
     private String infoCenter;
+
+    // 반려동물 동반 세부 정보 (detailPetTour2)
+    private String acmpyTypeCd;      // 동반 가능 유형 코드
+    private String acmpyPsblCpam;    // 동반 가능 조건
+    private String acmpyNeedMtr;     // 동반 시 필요 사항
+    private String etcAcmpyInfo;     // 기타 동반 안내
+    private String relaPosesFclty;   // 관련 보유 시설
 }

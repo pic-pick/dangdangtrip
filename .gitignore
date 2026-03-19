@@ -1,0 +1,29 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Spring Boot
+*.log
+application-secret.yml
+
+# Node / Frontend
+dangdangtrip-frontend/node_modules/
+dangdangtrip-frontend/dist/
+dangdangtrip-frontend/.vite/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/

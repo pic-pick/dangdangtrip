@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,5 +20,15 @@ public class AreaController {
     @GetMapping
     public List<AreaResponse> getAreas() {
         return areaService.getAreas();
+    }
+
+    @GetMapping("/{areaCode}/sigungu")
+    public List<AreaResponse> getSigungu(@org.springframework.web.bind.annotation.PathVariable String areaCode) {
+        return areaService.getSigungu(areaCode);
+    }
+
+    @GetMapping("/all")
+    public List<Map<String, Object>> getAllAreas() {
+        return areaService.getAllAreas();
     }
 }
