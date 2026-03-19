@@ -6,7 +6,6 @@ import com.dangdangtrip.dto.tourism.TourApiResponse;
 import com.dangdangtrip.external.tourism.TourismApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class AreaService {
 
     private final TourismApiClient tourismApiClient;

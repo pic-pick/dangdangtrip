@@ -7,7 +7,6 @@ import com.dangdangtrip.dto.tourism.*;
 import com.dangdangtrip.external.tourism.TourismApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Collections;
@@ -17,7 +16,6 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TravelPlaceService {
 
     private final TourismApiClient tourismApiClient;
