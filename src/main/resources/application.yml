@@ -1,12 +1,10 @@
-tourapi:
-  service-key: ${TOURAPI_SERVICE_KEY:}
-  base-url: ${TOURAPI_BASE_URL:https://apis.data.go.kr/B551011/KorPetTourService2}
-
-server:
-  port: ${PORT:8080}
-
 spring:
+  profiles:
+    active: secret
   cache:
     type: caffeine
     caffeine:
       spec: maximumSize=500,expireAfterWrite=10m
+
+server:
+  port: 8080
