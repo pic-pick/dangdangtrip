@@ -10,6 +10,7 @@ import com.dangdangtrip.dto.tourism.TourApiResponse;
 import com.dangdangtrip.dto.tourism.TourPlaceItem;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,6 +22,7 @@ public class TourismApiClient {
     private final WebClient tourApiWebClient;
     private final TourApiProperties tourApiProperties;
 
+    @Cacheable(value = "places", key = "#contentTypeId + '-' + #page + '-' + #size")
     public TourApiResponse<TourPlaceItem> getDefaultPlaces(Integer contentTypeId, int page, int size) {
         return tourApiWebClient.get()
                 .uri(uriBuilder -> {
@@ -40,6 +42,7 @@ public class TourismApiClient {
                 .block();
     }
 
+    @Cacheable(value = "places", key = "#areaCode + '-' + #sigunguCode + '-' + #contentTypeId + '-' + #page + '-' + #size")
     public TourApiResponse<TourPlaceItem> getAreaPlaces(Integer areaCode, Integer sigunguCode, Integer contentTypeId, int page, int size) {
         return tourApiWebClient.get()
                 .uri(uriBuilder -> {
@@ -61,6 +64,7 @@ public class TourismApiClient {
                 .block();
     }
 
+    @Cacheable(value = "places", key = "'search-' + #keyword + '-' + #contentTypeId + '-' + #page + '-' + #size")
     public TourApiResponse<TourPlaceItem> searchPlaces(String keyword, Integer contentTypeId, int page, int size) {
         return tourApiWebClient.get()
                 .uri(uriBuilder -> {
@@ -81,6 +85,7 @@ public class TourismApiClient {
                 .block();
     }
 
+    @Cacheable(value = "areas", key = "'all'")
     public TourApiResponse<AreaCodeItem> getAreas() {
         return tourApiWebClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -97,6 +102,7 @@ public class TourismApiClient {
                 .block();
     }
 
+    @Cacheable(value = "areas", key = "'sigungu-' + #areaCode")
     public TourApiResponse<AreaCodeItem> getSigungu(String areaCode) {
         return tourApiWebClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -116,6 +122,7 @@ public class TourismApiClient {
 
 
 
+    @Cacheable(value = "detail", key = "'common-' + #contentId")
     public TourApiResponse<DetailCommonItem> getPlaceCommonDetail(String contentId) {
         return tourApiWebClient.get()
                 .uri(uriBuilder -> uriBuilder
