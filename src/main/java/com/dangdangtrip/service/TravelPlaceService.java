@@ -12,6 +12,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class TravelPlaceService {
     public TravelPlacePageResponse getPlaces(
             Integer areaCode,
             Integer sigunguCode,
+            Integer contentTypeId,
             String keyword,
             int page,
             int size
@@ -30,11 +33,11 @@ public class TravelPlaceService {
         TourApiResponse<TourPlaceItem> apiResponse;
 
         if (StringUtils.hasText(keyword)) {
-            apiResponse = tourismApiClient.searchPlaces(keyword, page, size);
+            apiResponse = tourismApiClient.searchPlaces(keyword, contentTypeId, page, size);
         } else if (areaCode != null) {
-            apiResponse = tourismApiClient.getAreaPlaces(areaCode, sigunguCode, page, size);
+            apiResponse = tourismApiClient.getAreaPlaces(areaCode, sigunguCode, contentTypeId, page, size);
         } else {
-            apiResponse = tourismApiClient.getDefaultPlaces(page, size);
+            apiResponse = tourismApiClient.getDefaultPlaces(contentTypeId, page, size);
         }
 
         List<TourPlaceItem> items = extractItems(apiResponse);
@@ -103,22 +106,21 @@ public class TravelPlaceService {
 
         String contentTypeId = commonItem.getContenttypeid();
 
-        TourApiResponse<DetailIntroItem> introResponse = null;
-        if (StringUtils.hasText(contentTypeId)) {
-            introResponse = tourismApiClient.getPlaceIntroDetail(contentId, contentTypeId);
-        }
+        // intro, image, petTour 병렬 호출
+        reactor.core.publisher.Mono<TourApiResponse<DetailIntroItem>> introMono =
+                StringUtils.hasText(contentTypeId)
+                        ? tourismApiClient.getPlaceIntroDetailAsync(contentId, contentTypeId)
+                        : reactor.core.publisher.Mono.empty();
 
+        var results = reactor.core.publisher.Mono.zip(
+                introMono.onErrorResume(e -> reactor.core.publisher.Mono.empty()),
+                tourismApiClient.getPlaceImagesAsync(contentId).onErrorResume(e -> reactor.core.publisher.Mono.empty()),
+                tourismApiClient.getPlacePetTourDetailAsync(contentId).onErrorResume(e -> reactor.core.publisher.Mono.empty())
+        ).block();
 
-
-        TourApiResponse<DetailImageItem> imageResponse = tourismApiClient.getPlaceImages(contentId);
-
-        DetailIntroItem introItem = extractSingleItem(introResponse);
-        List<DetailImageItem> imageItems = extractItems(imageResponse);
-
-//        System.out.println("[DETAIL DEBUG] contentId = " + contentId);
-//        System.out.println("[DETAIL DEBUG] contentTypeId = " + contentTypeId);
-//        System.out.println("[DETAIL DEBUG] intro fields = " + (introItem != null ? introItem.getFields() : null));
-//        System.out.println("[DETAIL DEBUG] image count = " + imageItems.size());
+        DetailIntroItem introItem = results != null ? extractSingleItem(results.getT1()) : null;
+        List<DetailImageItem> imageItems = results != null ? extractItems(results.getT2()) : List.of();
+        PetTourItem petTourItem = results != null ? extractSingleItem(results.getT3()) : null;
 
         return TravelPlaceDetailResponse.builder()
                 .contentId(commonItem.getContentid())
@@ -127,7 +129,7 @@ public class TravelPlaceService {
                 .addr1(commonItem.getAddr1())
                 .addr2(commonItem.getAddr2())
                 .tel(commonItem.getTel())
-                .homepage(commonItem.getHomepage())
+                .homepage(extractUrl(commonItem.getHomepage()))
                 .overview(commonItem.getOverview())
                 .firstImage(commonItem.getFirstimage())
                 .images(buildImageList(commonItem.getFirstimage(), imageItems))
@@ -152,13 +154,7 @@ public class TravelPlaceService {
                 ))
                 .petInfo(firstNonBlank(
                         extractIntroValue(introItem, "chkpetshopping"),
-                        extractIntroValue(introItem, "chkpet"),
-                        extractIntroValue(introItem, "accomcount"),
-                        extractIntroValue(introItem, "roomcount"),
-                        extractIntroValue(introItem, "reservationurl"),
-                        extractIntroValue(introItem, "subfacility"),
-                        extractIntroValue(introItem, "treatmenu"),
-                        extractIntroValue(introItem, "packing")
+                        extractIntroValue(introItem, "chkpet")
                 ))
                 .infoCenter(firstNonBlank(
                         extractIntroValue(introItem, "infocenter"),
@@ -170,6 +166,11 @@ public class TravelPlaceService {
                         extractIntroValue(introItem, "reservationfood"),
                         extractIntroValue(introItem, "infocentershopping")
                 ))
+                .acmpyTypeCd(petTourItem != null ? petTourItem.getAcmpyTypeCd() : null)
+                .acmpyPsblCpam(petTourItem != null ? petTourItem.getAcmpyPsblCpam() : null)
+                .acmpyNeedMtr(petTourItem != null ? petTourItem.getAcmpyNeedMtr() : null)
+                .etcAcmpyInfo(petTourItem != null ? petTourItem.getEtcAcmpyInfo() : null)
+                .relaPosesFclty(petTourItem != null ? petTourItem.getRelaPosesFclty() : null)
                 .build();
     }
 
@@ -219,6 +220,20 @@ public class TravelPlaceService {
             if (StringUtils.hasText(value)) {
                 return value;
             }
+        }
+        return null;
+    }
+
+    private static final Pattern HREF_PATTERN = Pattern.compile("href=[\"']([^\"']+)[\"']", Pattern.CASE_INSENSITIVE);
+
+    private String extractUrl(String raw) {
+        if (!StringUtils.hasText(raw)) return null;
+        Matcher m = HREF_PATTERN.matcher(raw);
+        if (m.find()) return m.group(1);
+        // href 없으면 URL처럼 보이는 텍스트 그대로 반환
+        String trimmed = raw.trim();
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("www.")) {
+            return trimmed.startsWith("www.") ? "https://" + trimmed : trimmed;
         }
         return null;
     }

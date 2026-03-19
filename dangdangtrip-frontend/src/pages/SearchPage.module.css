@@ -1,0 +1,181 @@
+.page {
+    min-height: 100vh;
+    background-color: #f9fafb;
+}
+
+/* ── 검색 헤더 배너 ── */
+.searchBanner {
+    position: relative;
+    height: 280px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.searchBannerOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.bannerInner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 24px;
+}
+
+.searchTitle {
+    margin: 0 0 14px;
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.keyword {
+    color: #f7b500;
+}
+
+.countBadge {
+    display: inline-block;
+    padding: 6px 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    border-radius: 999px;
+    font-size: 13px;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/* ── 본문 ── */
+
+.main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+/* ── 그리드 ── */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+}
+
+/* ── 스켈레톤 로딩 ── */
+.skeletonGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+}
+
+.skeleton {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.skeletonImg {
+    width: 100%;
+    aspect-ratio: 1 / 0.72;
+    background: #e5e7eb;
+    animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeletonLine {
+    height: 14px;
+    border-radius: 6px;
+    background: #e5e7eb;
+    margin-top: 12px;
+    animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeletonLineShort {
+    width: 60%;
+    height: 12px;
+    border-radius: 6px;
+    background: #e5e7eb;
+    margin-top: 8px;
+    animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
+
+/* ── 빈 결과 ── */
+.empty {
+    text-align: center;
+    padding: 100px 0;
+}
+
+.emptyIcon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.emptyTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: #374151;
+    margin: 0 0 8px;
+}
+
+.emptyDesc {
+    font-size: 14px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* ── 더 보기 ── */
+.loadMore {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 48px;
+}
+
+.loadMoreBar {
+    width: 100%;
+    max-width: 400px;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.loadMoreProgress {
+    height: 100%;
+    background: #f7b500;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.loadMoreButton {
+    padding: 14px 48px;
+    border-radius: 999px;
+    border: 2px solid #f7b500;
+    background: transparent;
+    color: #f7b500;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.loadMoreButton:hover {
+    background: #f7b500;
+    color: #fff;
+}
+
+.loadMoreCount {
+    font-size: 13px;
+    color: #9ca3af;
+}
