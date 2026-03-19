@@ -20,6 +20,7 @@ application-secret.yml
 dangdangtrip-frontend/node_modules/
 dangdangtrip-frontend/dist/
 dangdangtrip-frontend/.vite/
+dangdangtrip-frontend/.env.local
 
 # OS
 .DS_Store

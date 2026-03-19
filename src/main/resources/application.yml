@@ -1,13 +1,6 @@
-spring:
-  profiles:
-    active: secret
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+tourapi:
+  service-key: ${TOURAPI_SERVICE_KEY:}
+  base-url: ${TOURAPI_BASE_URL:https://apis.data.go.kr/B551011/KorPetTourService2}
 
 server:
-  port: 8080
+  port: ${PORT:8080}

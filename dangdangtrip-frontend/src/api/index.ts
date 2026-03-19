@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '',
+});
+
 export interface PlaceSummary {
   contentId: string;
   title: string;
@@ -52,11 +56,11 @@ export const fetchPlaces = (params?: {
   keyword?: string;
   page?: number;
   size?: number;
-}) => axios.get<PlacePage>('/api/places', { params }).then((r) => r.data);
+}) => apiClient.get<PlacePage>('/api/places', { params }).then((r) => r.data);
 
 export const fetchPlaceDetail = (contentId: string) =>
-  axios.get<PlaceDetail>(`/api/places/${contentId}`).then((r) => r.data);
+  apiClient.get<PlaceDetail>(`/api/places/${contentId}`).then((r) => r.data);
 
 export const fetchAreas = () =>
-  axios.get<Area[]>('/api/areas').then((r) => r.data);
+  apiClient.get<Area[]>('/api/areas').then((r) => r.data);
 
